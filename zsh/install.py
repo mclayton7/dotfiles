@@ -6,7 +6,8 @@ import subprocess
 import sys
 
 def symlink(source, link_name):
-	os.unlink(link_name)
+	if os.path.islink(link_name):
+		os.unlink(link_name)
 	os.symlink(source, link_name)
 
 def install_for_linux():
@@ -20,6 +21,7 @@ def install_for_linux():
 	subprocess.call('chsh -s /bin/zsh', shell=True)
 
 if 'linux' in sys.platform:
+	print 'make sure zsh is already installed'
 	install_for_linux()
 	print 'Installed for Linux.'
 else:
