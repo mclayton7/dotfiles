@@ -1,0 +1,31 @@
+#!/bin/python
+python
+import sys
+import os
+
+sys.path.insert(0, '%s/dotfiles/gdb' % os.environ['HOME'])
+from qt4 import register_qt4_printers
+register_qt4_printers (None)
+end
+
+set print pretty 1
+set print thread-events off
+# Disable printing of static members. Qt has too many, it clutters the output
+set print static-members off
+
+# Remember history over restarts
+set history save
+set history filename ~/.gdb_history
+
+# Show the real classname of object instances - e.g. (Kded *) 0x8073440 instead of (class QObject *) 0x8073440
+set print object
+
+# Exit handler stolen from Adam Chesney
+def exit_handler(event):
+   try:
+      if event.exit_code == 0:
+         gdb.execute('quit')
+   except:
+      pass
+
+gdb.events.exited.connect(exit_handler)
