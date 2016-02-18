@@ -1,0 +1,27 @@
+#!/bin/bash
+
+_UNDEFINED=""
+if [ $1 == "-u" ]
+then
+   shift
+   _UNDEFINED="yes"
+fi
+
+export _SYMBOL=$1
+shift
+
+for _FILE in "$@"
+do
+   if [ -z "$_UNDEFINED" ]
+   then
+      _FOUND_SYMBOL=$(objdump -T -t $_FILE 2>/dev/null | c++filt | grep -E $_SYMBOL | grep -v '*UND*')
+   else
+      _FOUND_SYMBOL=$(objdump -T -t $_FILE 2>/dev/null | c++filt | grep -E $_SYMBOL )
+   fi
+   # print file name if symbol found
+   if [ -n "$_FOUND_SYMBOL" ]; then
+      echo $_FOUND_SYMBOL
+      echo $_FILE
+   fi
+done
+

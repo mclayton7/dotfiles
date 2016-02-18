@@ -1,22 +1,57 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Mac Clayton 2016
 
 import os
+import shutil
 import subprocess
 import sys
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
-def install_for_linux():
-	script_dir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
-	font_dir = os.path.join(script_dir, 'fonts')
-	if os.path.exists(font_dir) is not True:
-		git_command = 'git clone --recursive git@github.com:powerline/fonts.git '
-		subprocess.call(git_command, shell=True)
-	subprocess.call(font_dir + os.path.sep + 'install.sh', shell=True)
 
-if 'linux' in sys.platform:
-	install_for_linux()
-	print 'Installed for Linux.'
-else:
-	print 'Platform %s not supported.' % sys.platform
 
+def installPowerlineFontsOnWindows():
+   font_directory = os.path.join(base_dir, 'fonts')
+   if not os.path.exists(font_directory):
+      print 'Cloning Fonts...'
+      pr = subprocess.Popen('git clone https://github.com/powerline/fonts.git ' + font_directory,
+         shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+      (git_status, error) = pr.communicate()
+      print 'Done cloning'
+   else:
+      print 'Fonts directory already exists'
+
+   print 'Installing'
+   pr = subprocess.Popen('powershell install.ps1', cwd=font_directory,
+      shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+   (status, error) = pr.communicate()
+   print status, error
+
+
+def installPowerlineFontsOnLinux():
+   font_directory = os.path.join(base_dir, 'fonts')
+   if not os.path.exists(font_directory):
+      print 'Cloning Fonts:'
+      pr = subprocess.Popen('git clone https://github.com/powerline/fonts.git ' + font_directory,
+         shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+      (git_status, error) = pr.communicate()
+      print 'Done Cloning'
+   else:
+      print 'Fonts directory already exists'
+
+   print 'Installing'
+   pr = subprocess.Popen('/bin/sh install.sh', cwd=font_directory,
+      shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+   (status, error) = pr.communicate()
+   print status, error
+
+
+if __name__ == '__main__':
+   if sys.platform.startswith('win'):
+      installPowerlineFontsOnWindows()
+      print "Finished!"
+   elif sys.platform.startswith('linux'):
+      installPowerlineFontsOnLinux()
+      print "Finished!"
+   else:
+      print 'OS %s not supported' % sys.platform
