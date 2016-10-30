@@ -2,8 +2,12 @@
 	"default_line_ending": "unix",
 	"detect_indentation": false,
 	"font_face": "Inconsolata",
-	"font_size": 12,
+	"font_size": 9,
 	"ignore_inodes": true,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
 	"rulers":
 	[
 		100

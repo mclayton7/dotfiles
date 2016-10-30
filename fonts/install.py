@@ -40,6 +40,7 @@ def installPowerlineFontsOnLinux():
       print 'Fonts directory already exists'
 
    print 'Installing'
+   print font_directory
    pr = subprocess.Popen('/bin/sh install.sh', cwd=font_directory,
       shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
    (status, error) = pr.communicate()
